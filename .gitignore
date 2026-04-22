@@ -1,0 +1,22 @@
+__pycache__/
+*.pyc
+useless
+data
+# Keep generic training artifacts out of Git.
+runs/
+outputs/logs/
+outputs/results/
+outputs/videos/
+outputs/gallery/
+outputs/checkpoints/checkpoint_epoch_*.pth
+
+# ── Ultralytics / YOLO artifacts ─────────────────────────────────────────────
+# Ultralytics caches / outputs
+*.engine
+
+*.torchscript
+*.tflite
+*.mlpackage
+
+# Dataset caches created by Ultralytics
+**/*.cache
