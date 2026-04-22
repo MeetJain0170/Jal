@@ -1,4 +1,4 @@
-# JalDrishti
+# 💧JalDrishti👀
 ### Underwater Enhancement & Maritime Scene Intelligence
 
 > End-to-end computer vision system for underwater environments — image enhancement, marine object detection, depth estimation, and water-quality analytics in one integrated pipeline.
@@ -53,21 +53,20 @@ Standard image enhancement and detection pipelines trained on surface imagery fa
 
 ## System Architecture
 
-```
-Frontend (static HTML/CSS/JS)
-        │
-        ▼
-Flask API Layer (api.py)
-        │
-   ┌────┴─────────────────────────────────┐
-   │                                      │
-Enhancement              Detection / Depth / Analytics
-   │                                      │
-U-Net checkpoint    YOLOv8 (marine_detector.pt)
-   +                     +
-Classical OpenCV    MiDaS Small
-polish pipeline     Water Quality
-                    Image Metrics
+```mermaid
+flowchart TD
+  U[Frontend UI static] --> API[Flask API Layer]
+  API --> ENH[Enhancement Module]
+  API --> DET[Detection Module]
+  API --> DEP[Depth Module]
+  API --> WQ[Water Quality Module]
+  API --> MET[Metrics Module]
+
+  ENH --> UNET[U-Net Checkpoint Loader]
+  ENH --> CV[Classical OpenCV Pipeline]
+  DET --> HYB[Hybrid Detector and Post Processing]
+  DEP --> MIDAS[MiDaS Small]
+  MET --> IQ[PSNR SSIM UIQM UCIQE EPS]
 ```
 
 ### End-to-End Request Flow
@@ -82,6 +81,30 @@ A single `POST /api/enhance` triggers this sequence:
 6. **Water Quality** — transmission map statistics, haze index, and colour dominance ratios are computed from raw and enhanced images.
 7. **Metrics** — PSNR, SSIM, UIQM, UCIQE, and EPS are computed and validated as finite before being returned.
 8. Flask assembles all outputs into a single JSON response. The frontend renders everything.
+
+---
+
+```mermaid
+flowchart LR
+  A[Input Underwater Image] --> B[Preprocessing and Color Stabilization]
+  B --> C[Hybrid Enhancement Engine]
+  C --> D[Classical OpenCV Full Resolution Polish]
+  C --> E[Detection Inference Image]
+  E --> F[Marine and Diver Detection]
+  E --> G[Depth Estimation MiDaS]
+  E --> H[Water Quality Analysis]
+  C --> I[Image Quality Metrics]
+  F --> J[Threat and Scene Summary]
+  G --> K[Depth Map and Distance Zones]
+  H --> K2[Visibility and Turbidity KPIs]
+  I --> L[PSNR SSIM UIQM UCIQE EPS]
+  J --> M[Unified Dashboard Output]
+  K --> M
+  K2 --> M
+  L --> M
+
+  
+```
 
 ### Module Map
 
