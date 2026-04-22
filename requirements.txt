@@ -1,0 +1,43 @@
+# JalDrishti — Maritime Security Vision System
+# ─────────────────────────────────────────────
+# All packages are required for full Docker deployment.
+# For local dev you may skip lightning/tensorboard/segmentation-models-pytorch.
+
+# ── Core ──────────────────────────────────────────────────────────────────────
+# NOTE (Windows/GPU): install CUDA-enabled PyTorch from the official PyTorch index URL.
+# If you `pip install torch` without the index URL you may end up with a CPU-only build
+# (e.g. torch==...+cpu) and YOLO training will run on CPU.
+# See: https://pytorch.org/get-started/locally/
+#
+# Example (PowerShell, CUDA 12.4 wheels):
+#   pip uninstall -y torch torchvision torchaudio
+#   pip install --index-url https://download.pytorch.org/whl/cu124 torch torchvision torchaudio
+#
+# Keep these unpinned here so your environment chooses the right wheel via the index-url.
+torch
+torchvision
+numpy>=1.24.0,<2.0.0          # numpy 2.x breaks torch 2.x C extensions
+Pillow>=10.0.0
+scikit-image>=0.21.0
+scipy>=1.11.0
+matplotlib>=3.7.0
+
+# ── Web API ───────────────────────────────────────────────────────────────────
+flask>=3.0.0
+flask-cors>=4.0.0
+
+# ── Object Detection ──────────────────────────────────────────────────────────
+ultralytics>=8.0.0
+
+# ── Depth Estimation (MiDaS uses timm) ───────────────────────────────────────
+timm>=0.9.0
+
+# ── Computer Vision ───────────────────────────────────────────────────────────
+# Use headless variant in Docker — no GUI/display deps required
+opencv-python-headless>=4.8.0
+
+# ── Training Infrastructure ───────────────────────────────────────────────────
+lightning>=2.1.0
+torchmetrics>=1.2.0
+segmentation-models-pytorch>=0.3.3
+tensorboard>=2.14.0
