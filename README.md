@@ -1,121 +1,190 @@
-# 🌊 JalDrishti – See Underwater, For Real
+# JalDrishti: Underwater Enhancement and Maritime Scene Intelligence
 
-**Your murky underwater photos? We fix that.**  
-JalDrishti is a deep-learning sidekick that takes sad, blurry, greenish underwater images and turns them into something you’d actually want to look at. Built for a uni project, kept readable on purpose (viva-friendly, promise).
+JalDrishti is an end-to-end computer vision system for underwater environments.  
+It enhances low-visibility images, estimates depth, detects divers and marine objects, and reports quality metrics in one integrated workflow.
 
----
-
-## 🎯 What’s the vibe?
-
-- **You give us**: One sad underwater image (turbid, low contrast, that classic “everything is green” vibe).
-- **We give you**: A cleaner, punchier image with better contrast, nicer colours, and edges that don’t look like mush.
-- **The magic**: A U-Net that learned from **paired data** — degraded → clean — so it actually knows what “good” looks like.
-
-There’s also a **web UI** so you can drag-and-drop and slide before/after. No terminal required. 🖼️
+It is built to be technically strong and presentation-ready for academic evaluation.
 
 ---
 
-## ⚡ Quick start
+## Project Motivation
+
+Underwater imaging is difficult because of:
+- low contrast and haze
+- dominant green/blue color cast
+- backscatter and suspended particles
+- poor edge visibility
+
+JalDrishti addresses these problems using a hybrid pipeline that combines deep learning, classical enhancement, depth estimation, and scene-aware detection.
+
+---
+
+## Key Features
+
+- **Hybrid image enhancement** (U-Net + classical OpenCV)
+- **Object detection** for divers and marine classes
+- **Depth map generation** with MiDaS and fallback resilience
+- **Water-quality analytics** (visibility and turbidity indicators)
+- **Quality metrics panel** (PSNR, SSIM, UIQM, UCIQE, EPS)
+- **Interactive web UI** for upload, comparison, and analysis
+
+---
+
+## End-to-End Workflow
+
+```mermaid
+flowchart LR
+  A[Input Underwater Image] --> B[Preprocessing and Color Stabilization]
+  B --> C[Hybrid Enhancement Engine]
+  C --> D[Classical OpenCV Full Resolution Polish]
+  C --> E[Detection Inference Image]
+  E --> F[Marine and Diver Detection]
+  E --> G[Depth Estimation MiDaS]
+  E --> H[Water Quality Analysis]
+  C --> I[Image Quality Metrics]
+  F --> J[Threat and Scene Summary]
+  G --> K[Depth Map and Distance Zones]
+  H --> K2[Visibility and Turbidity KPIs]
+  I --> L[PSNR SSIM UIQM UCIQE EPS]
+  J --> M[Unified Dashboard Output]
+  K --> M
+  K2 --> M
+  L --> M
+```
+
+---
+
+## Architecture
+
+```mermaid
+flowchart TD
+  U[Frontend UI static] --> API[Flask API Layer]
+  API --> ENH[Enhancement Module]
+  API --> DET[Detection Module]
+  API --> DEP[Depth Module]
+  API --> WQ[Water Quality Module]
+  API --> MET[Metrics Module]
+
+  ENH --> UNET[U-Net Checkpoint Loader]
+  ENH --> CV[Classical OpenCV Pipeline]
+  DET --> HYB[Hybrid Detector and Post Processing]
+  DEP --> MIDAS[MiDaS Small]
+  MET --> IQ[PSNR SSIM UIQM UCIQE EPS]
+```
+
+---
+
+## Technology Stack
+
+- Python
+- Flask
+- PyTorch, torchvision, timm
+- Ultralytics YOLO and YOLO-World
+- OpenCV, Pillow, NumPy, SciPy, scikit-image
+- HTML, CSS, JavaScript
+- Git LFS for large model artifacts
+
+---
+
+## Datasets
+
+- **UIEB** (paired underwater enhancement data)
+- **DeepFish**
+- **Fish4Knowledge**
+- **TrashCan**
+
+These datasets support enhancement quality and underwater scene understanding.
+
+---
+
+## Repository Structure
+
+| Path | Purpose |
+|---|---|
+| `api.py` | Main Flask API with route orchestration |
+| `enhance.py` | Hybrid enhancement pipeline |
+| `detection/` | Marine/diver detectors and post-processing |
+| `depth/` | MiDaS depth estimation module |
+| `analysis/` | Quality metrics, water analytics, threat scoring |
+| `model_loader.py` | Checkpoint loading utilities |
+| `config.py` | Central configuration |
+| `static/` | Frontend UI |
+| `outputs/checkpoints/` | Enhancement checkpoints |
+| `data/JalDrishti/` | Local model/data artifacts |
+| `wiki-draft/` | Project report pages |
+
+---
+
+## Quick Start
+
+### 1) Clone and pull model artifacts
 
 ```bash
+git clone https://github.com/MeetJain0170/Jal-prac.git
+cd Jal-prac
 git lfs install
 git lfs pull
+```
+
+### 2) Install dependencies
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-`git lfs pull` is required in this repo because large model/checkpoint files are
-stored via Git LFS (for example `data/JalDrishti/*` and
-`outputs/checkpoints/*`).
-
-Folders you’ll care about (they pop up when needed):
-
-- `data/raw/` – the blurry / green stuff  
-- `data/enhanced/` – the “reference” clean versions  
-- `outputs/` – checkpoints, pretty plots, and logs  
-
-Using **UIEB**? Point `organize_uieb_data.py` at your Kaggle cache and run:
-
-```bash
-python organize_uieb_data.py
-```
-
-That’ll copy a fixed subset of paired images into `data/raw/` and `data/enhanced/`. Easy.
-
----
-
-## 🚀 Run everything
-
-**Train the model** (grab coffee for long runs):
-
-```bash
-python train.py
-```
-
-This will split data, train the U-Net (L1 + SSIM, plus VGG perceptual when it can), save the best checkpoint to `outputs/checkpoints/best_model.pth`, and dump per-epoch comparison pics and training curves. All the good stuff.
-
-**Evaluate on validation set:**
-
-```bash
-python evaluate.py
-```
-
-**Enhance one image from the CLI:**
-
-```bash
-python inference.py input.jpg output.jpg
-```
-
-**Fire up the web UI:**
+### 3) Run locally
 
 ```bash
 python api.py
 ```
 
-Then open **http://localhost:5500** and upload something. Drag, drop, compare. 🎨
+Open: `http://localhost:5500`
 
 ---
 
-## 🧠 Model & training (the short version)
+## Main API Endpoints
 
-- **Architecture**: U-Net, 4 down / 4 up stages, skip connections, BatchNorm + ReLU, Sigmoid at the end so outputs stay in \([0, 1]\).
-- **Input size**: \(256 \times 256 \times 3\) (we resize for you).
-- **Loss** (when VGG is available):  
-  \(\text{loss} = 0.6 \cdot \text{L1} + 0.3 \cdot \text{SSIMLoss} + 0.1 \cdot \text{VGG perceptual}\).  
-  No VGG (offline / SSL)? We fall back to L1 + SSIM. No drama.
-- **Optimizer**: Adam, lr \(1 \times 10^{-4}\), batch size 8.
-- **Epochs**: tweak in `config.py` (e.g. 15 for a quick sanity run, ~80 when you’re serious).
-- **Early stopping**: we bail if validation loss gets boring for a while.
-
-We log **PSNR** (dB) and **SSIM** (0–1) so you can flex in the report.
+- `GET /api/status`
+- `POST /api/enhance`
+- `POST /api/detect`
+- `POST /api/depth`
+- `POST /api/analyze-water`
+- `GET /api/gallery`
+- `POST /api/gallery/save`
+- `DELETE /api/gallery/clear`
 
 ---
 
-## 📁 What’s in the box?
+## Validation Checklist
 
-| File / folder      | What it does |
-|--------------------|--------------|
-| `config.py`        | Paths, image size, hyperparameters. Your control panel. |
-| `dataset.py`       | Paired dataset, resize + light augmentation. |
-| `model.py`         | U-Net: encoder–decoder + skip connections. |
-| `losses.py`        | SSIM loss + optional VGG16 perceptual, one combined class. |
-| `train.py`         | Training loop, early stopping, checkpointing, per-epoch grids. |
-| `evaluate.py`      | Run on validation split, report PSNR/SSIM. |
-| `inference.py`     | CLI: one image in, one enhanced image out. |
-| `utils.py`         | Metrics, training curves, comparison image saving. |
-| `api.py`           | Flask backend: loads `best_model.pth`, serves `/api/enhance`. |
-| `static/`          | The JalDrishti web UI (HTML/CSS/JS). |
+- LFS files are present and loaded
+- `/api/status` reports model and module readiness
+- enhancement outputs render correctly
+- detection overlays are scene-consistent
+- depth map and analytics are generated
+- metrics are finite and updated in UI
 
 ---
 
-## 🐠 Honest fine print
+## Challenges and Improvements
 
-- Trained on a **limited UIEB subset**, so it’s good but not magic on every ocean on Earth.
-- Default training is CPU; long runs can be slow. Drop `NUM_EPOCHS` in `config.py` for quick experiments.
-- Goal here is **clarity and explainability** for viva/review, not to outdo every SOTA paper. Still looks great on a slide. 📊
-- First run may still download some third-party runtime weights (for example
-  torch hub caches such as MiDaS dependencies) if they are not present on the
-  user machine.
+Current challenges:
+- confidence tuning under diverse underwater scenes
+- green/blue cast control during enhancement
+- shark vs diver ambiguity in cluttered frames
+- metric stability under strong transformations
+
+Future improvements:
+- larger class-balanced underwater data
+- class-specific fine-tuning (especially shark/diver)
+- video-level temporal consistency
+- optimized inference deployment pipeline
 
 ---
 
-**JalDrishti** – because the sea is cool and your photos should show it. 🌊✨
+## Conclusion
+
+JalDrishti delivers a complete underwater vision pipeline from raw image input to enhanced output, object intelligence, and quantitative analytics.  
+The project combines practical engineering, explainable design, and strong presentation quality for final-year project review.
