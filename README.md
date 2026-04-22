@@ -313,19 +313,4 @@ python pipeline/step13_realworld_test.py --source /path/to/dive_footage.mp4
 
 ---
 
-## Validation Checklist
-
-Before submitting for academic evaluation:
-
-- [ ] Git LFS files are present (`git lfs ls-files` confirms all pointers are hydrated)
-- [ ] `GET /api/status` returns healthy for YOLO weights, U-Net checkpoint, MiDaS, and all analysis modules
-- [ ] `POST /api/enhance` returns a visibly improved image: reduced haze, corrected colour cast, sharpened edges
-- [ ] Detection overlays are scene-consistent: fish in water, trash in debris zones, no obviously wrong class assignments
-- [ ] Depth map shows plausible relative depth gradients (foreground vs. background)
-- [ ] Water quality KPIs are populated and non-zero
-- [ ] All five image metrics (PSNR, SSIM, UIQM, UCIQE, EPS) are finite and displayed correctly in the UI
-- [ ] Gallery save and retrieve work without error
-
----
-
 *JalDrishti — built for the ocean, tested in the deep.*
