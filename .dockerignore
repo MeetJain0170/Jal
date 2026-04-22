@@ -1,0 +1,29 @@
+# Git
+.git
+.gitignore
+
+# Python caching
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# PyTorch Lightning & Weights
+lightning_logs/
+outputs/
+*.pt
+*.pth
+
+# IDE
+.vscode/
+.idea/
+
+# Local data cache
+data/
