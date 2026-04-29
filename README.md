@@ -216,6 +216,34 @@ All three datasets were remapped to 17 classes. Design decisions are noted for e
 > If RAM is tight, switch `cache='ram'` to `cache='disk'` — still significantly faster than cold disk reads per epoch.
 
 ---
+## 🖼️ System Output — Live Demo
+
+### Original → Enhanced
+| Raw Input | Classical OpenCV Polish |
+|---|---|
+| <img width="305" height="447" alt="Screenshot 2026-04-29 174634" src="https://github.com/user-attachments/assets/3a23767f-0fe7-4b2f-8851-724996f00506" /> | <img width="512" height="760" alt="Screenshot 2026-04-29 174530" src="https://github.com/user-attachments/assets/96dfa8f1-a5e9-49d9-ba36-6bdde27be422" /> |
+
+### Object Detection
+<img width="500" height="752" alt="Screenshot 2026-04-29 174558" src="https://github.com/user-attachments/assets/1fa33d80-d277-4ec3-acc0-6a7cda247f20" />
+
+*Fish (74.2%, 27.6%, 19.1%) and Diver (86.3%) detected with bounding boxes*
+
+### Depth Map (MiDaS)
+<img width="507" height="819" alt="Screenshot 2026-04-29 174616" src="https://github.com/user-attachments/assets/2c9268fa-16f9-40b2-8552-b82a3ff3f9cd" />
+
+*Per-pixel relative depth with Near / Mid / Far zone annotation*
+
+### Environmental Intelligence
+<img width="915" height="527" alt="image" src="https://github.com/user-attachments/assets/4bd9dc7e-5527-46e4-89de-e6d9816b0e2b" />
+
+*15m visibility · Moderate turbidity · Coastal environment classification*
+
+### System Metrics & Threat Assessment
+<img width="1602" height="443" alt="image" src="https://github.com/user-attachments/assets/ec501a86-7623-4d05-b588-6756a8561e5f" />
+
+*PSNR: 18.80 · SSIM: 0.6982 · UIQM: 0.122 · Threat Score: 8 (GREEN – CLEAR)*
+
+---
 
 ## Quick Start
 
